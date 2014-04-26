@@ -6,4 +6,4 @@
     android:divider="#c0c0c0"
     android:dividerHeight="0.5dp"
     android:background="#ffffff"
-    tools:context="co.uk.mobilejug.kicc.NavigationDrawerFragment" />
+    tools:context="co.uk.mobilejug.kicc.VideoView_fragment" />

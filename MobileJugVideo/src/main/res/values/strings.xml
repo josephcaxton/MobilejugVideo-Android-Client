@@ -2,9 +2,12 @@
 <resources>
 
     <string name="app_name">KICC Videos</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Recently Added</string>
+    <string name="title_section2">Free View</string>
+    <string name="title_section3">Premium</string>
+    <string name="title_section4">Playlist</string>
+    <string name="title_section5">History</string>
+    <string name="title_section6">Login</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -16,4 +19,12 @@
     <string name="History">History</string>
     <string name="Login">Login</string>
     <string name="Logout">Logout</string>
+    <string name="LoginScreen">Login</string>
+    <string name="email">Email:</string>
+    <string name="password">Password:</string>
+    <string name="login">Login:</string>
+    <string name="cancel">Cancel</string>
+    <string name="attempts">Attempts Left:</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

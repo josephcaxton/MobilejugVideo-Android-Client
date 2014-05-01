@@ -4,7 +4,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,13 +17,16 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, Login_fragment.OnFragmentInteractionListener, VideoView_fragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
+    private String ENDPOINT = "http://mobilejug.co.uk/services/v1/index.php/freevideos";
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
+    public static String UserName;
+    public static String UserEmail;
+    public static String UserApikey;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -46,10 +51,82 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, VideoView_fragment.newInstance(position + 1))
-                .commit();
+
+        if(position == 5){
+            // If user is logged in then he is asking to be logout here
+            if(UserApikey != null && !UserApikey.isEmpty()){
+                UserName = "";
+                UserEmail = "";
+                UserApikey = "";
+                // Show logout on the navigation Drawer
+                NavigationDrawerFragment nf = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
+                nf.RefreshDrawer(UserApikey);
+                // Clean out Preference
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("APIKEY","");
+                editor.commit();
+                // Take us back to the login screen
+                Login_fragment f = Login_fragment.newInstance(position + 1);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, f)
+                        .commit();
+            }
+            else {
+                Login_fragment f = Login_fragment.newInstance(position + 1);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, f)
+                        .commit();
+            }
+        }
+        else {
+               // if postion is not 5 / then is the user logged in already.. check preferences
+
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            String apikey = pref.getString("APIKEY","");
+
+            if (apikey.equalsIgnoreCase("")) {
+                //We need to force login.
+                Login_fragment f = Login_fragment.newInstance(position + 1);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, f)
+                        .commit();
+            }
+            else {
+                // User is already logged in
+                UserApikey = apikey;
+
+                VideoView_fragment vv = VideoView_fragment.newInstance(position + 1);
+                Bundle args = new Bundle();
+                args.putString("APIKEY", UserApikey);
+                vv.setArguments(args);
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, vv)
+                        .commit();
+            }
+        }
     }
+
+    public void onFragmentInteraction(String[] authDetails){
+
+        UserName = authDetails[0];
+        UserEmail =authDetails[1];
+        UserApikey = authDetails[2];
+        //Toast toast = Toast.makeText(this, UserName + " " + UserEmail+ " " + UserApikey , Toast.LENGTH_SHORT); toast.show();
+        // Update List on Drawer Fragment
+        NavigationDrawerFragment nf = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        nf.RefreshDrawer(UserApikey);
+        // Store ApiKey into Preference
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("APIKEY",UserApikey);
+        editor.commit();
+    }
+
 
     public void onSectionAttached(int number) {
         switch (number) {
@@ -61,6 +138,15 @@ public class MainActivity extends Activity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
+                break;
+            case 5:
+                mTitle = getString(R.string.title_section5);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_section6);
                 break;
         }
     }
@@ -79,8 +165,9 @@ public class MainActivity extends Activity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
+            //TODO
+            /*getMenuInflater().inflate(R.menu.main, menu);
+            restoreActionBar(); */
             return true;
         }
         return super.onCreateOptionsMenu(menu);

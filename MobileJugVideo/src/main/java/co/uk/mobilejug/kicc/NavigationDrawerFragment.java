@@ -58,6 +58,9 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private  DrawerListAdapter adapter;
+    private String APIKey;
+    ArrayList<DrawerListItem> values = new ArrayList<DrawerListItem>();
 
     public NavigationDrawerFragment() {
     }
@@ -91,17 +94,45 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+               R.layout.fragment_navigation_drawer, container, false);
 
+        // Check if user is logged in and hold on to an API Key
+        //MainActivity mainactivity = (MainActivity)getActivity();
+        //APIKey = mainactivity.UserApikey;
+
+
+        CreateNavigationList(APIKey);
+
+        adapter = new  DrawerListAdapter(getActionBar().getThemedContext(),
+                R.layout.drawerlayout, values);
+        mDrawerListView.setAdapter(adapter);
+        /*mDrawerListView.setAdapter(new ArrayAdapter<String>(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                new String[]{
+                        getString(R.string.title_section1),
+                        getString(R.string.title_section2),
+                        getString(R.string.title_section3),
+                }));*/
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
+                // When user selects item in list we want to refresh the adapter and notify Data changed
+
             }
         });
+
+        return mDrawerListView;
+    }
+
+    private void CreateNavigationList(String APIKey) {
         // Create the list of items in the Navigation Bar
-        ArrayList<DrawerListItem> values = new ArrayList<DrawerListItem>();
+        //First Clear all data in values
+        values.clear();
 
         for (int i = 0; i < 6; i++){
 
@@ -138,8 +169,17 @@ public class NavigationDrawerFragment extends Fragment {
                     break;
                 case 5:
                     DrawerListItem dr6 = new DrawerListItem();
-                    dr6.setTitle(getString(R.string.Login));
-                    dr6.setIcon(R.drawable.login);
+                    // If user is logged in show logout
+                    if (APIKey != null && !APIKey.isEmpty()) {
+
+                        dr6.setTitle(getString(R.string.Logout));
+                        dr6.setIcon(R.drawable.logout);
+
+                    }
+                    else{
+                        dr6.setTitle(getString(R.string.Login));
+                        dr6.setIcon(R.drawable.login);
+                    }
                     values.add(dr6);
                     break;
 
@@ -147,20 +187,6 @@ public class NavigationDrawerFragment extends Fragment {
 
         }
 
-        DrawerListAdapter adapter = new  DrawerListAdapter(getActionBar().getThemedContext(),
-                R.layout.drawerlayout, values);
-        mDrawerListView.setAdapter(adapter);
-        /*mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));*/
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
     }
 
     public boolean isDrawerOpen() {
@@ -252,6 +278,7 @@ public class NavigationDrawerFragment extends Fragment {
         if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
+
     }
 
     @Override
@@ -331,5 +358,16 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Toast.makeText(getActivity(),"Resumed",Toast.LENGTH_LONG).show();
+
+        }
+    public void RefreshDrawer(String apiKey){
+        APIKey = apiKey;
+        CreateNavigationList(APIKey);
+        adapter.notifyDataSetChanged();
     }
 }

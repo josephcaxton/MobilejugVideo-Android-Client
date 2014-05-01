@@ -2,7 +2,6 @@ package co.uk.mobilejug.kicc;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -37,17 +36,15 @@ public class Splash extends Activity {
     }
 
     protected void launchActivity() {
-        SharedPreferences pref = getSharedPreferences("default", MODE_PRIVATE);
-        Intent mainIntent;
-        if (pref.contains("loginUser")) {
-            mainIntent = new Intent(Splash.this, MainActivity.class);
-            mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        } else {
-            //mainIntent = new Intent(Splash.this, Login.class);
-            mainIntent = new Intent(Splash.this, MainActivity.class);
-        }
-        Intent intent = getIntent();
 
+        // Comment this out it is only used for testing
+        /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("APIKEY","");
+        editor.commit();*/
+
+
+        Intent mainIntent = new Intent(Splash.this, MainActivity.class);
         Splash.this.startActivity(mainIntent);
         Splash.this.finish();
     }

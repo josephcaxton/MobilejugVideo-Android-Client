@@ -2,6 +2,7 @@ package co.uk.mobilejug.kicc;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,8 @@ public class VideoView_fragment extends ListFragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Integer sectionNum = 0;
     private List VideoList;
-
+    private String APIKey;
+    private OnFragmentInteractionListener mListener;
 
     public static VideoView_fragment newInstance(int sectionNumber) {
         VideoView_fragment fragment = new VideoView_fragment();
@@ -39,23 +41,31 @@ public class VideoView_fragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        VideoList = new ArrayList();
-        VideoItem V1 = new VideoItem();
-        V1.setID(1);
-        V1.setDescription("Pastors Conference");
-        V1.setTitle("This is a title");
-        V1.setImageLocation("http://temp/file/book/images/1325310017.jpg");
-        VideoList.add(V1);
-        VideoList.add(V1);
-        VideoList.add(V1);
-        mAdapter = new VideoListAdapter(getActivity(), VideoList);
-        setListAdapter(mAdapter);
+             VideoList = new ArrayList();
+             VideoItem V1 = new VideoItem();
+             V1.setID(1);
+             V1.setDescription("Pastors Conference");
+             V1.setTitle("This is a title");
+             V1.setImageLocation("http://temp/file/book/images/1325310017.jpg");
+             VideoList.add(V1);
+             VideoList.add(V1);
+             VideoList.add(V1);
+             mAdapter = new VideoListAdapter(getActivity(), VideoList);
+             setListAdapter(mAdapter);
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Intent i = getActivity().getIntent();
+        APIKey = i.getStringExtra("APIKEY");
 
-        return inflater.inflate(R.layout.fragment_video, container, false);
+        // You need to have been logged in successfully to be in this fragment so update Drawer
+        String[] authDetails = {"","",APIKey};
+        mListener.onFragmentInteraction(authDetails);
+
+
+            return inflater.inflate(R.layout.fragment_video, container, false);
     }
 
     @Override
@@ -69,7 +79,22 @@ public class VideoView_fragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        try {
+        mListener = (OnFragmentInteractionListener) activity;
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+    public interface OnFragmentInteractionListener {
+
+        public void onFragmentInteraction(String[] apiKey);
     }
 }

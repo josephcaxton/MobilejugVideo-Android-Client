@@ -100,9 +100,10 @@ public class MainActivity extends Activity
                 UserApikey = apikey;
 
                 VideoView_fragment vv = VideoView_fragment.newInstance(position + 1);
-                Bundle args = new Bundle();
-                args.putString("APIKEY", UserApikey);
-                vv.setArguments(args);
+                //Bundle args = new Bundle();
+                //Bundle args = vv.getArguments();
+                //args.putString("APIKEY", UserApikey);
+                //vv.setArguments(args);
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, vv)
@@ -125,6 +126,7 @@ public class MainActivity extends Activity
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("APIKEY",UserApikey);
         editor.commit();
+
     }
 
 

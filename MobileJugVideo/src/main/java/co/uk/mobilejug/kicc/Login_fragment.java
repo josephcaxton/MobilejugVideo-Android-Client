@@ -48,6 +48,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
     private Button btnLogin;
     private Button btnCancel;
     private TextView txtLoginFailed;
+    private String APIKEY;
 
     public static Login_fragment newInstance(int sectionNumber) {
         Login_fragment fragment = new Login_fragment();
@@ -117,11 +118,6 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
         // Do something
     }
 
-    private void CloseFragment() {
-        getActivity().getFragmentManager().beginTransaction()
-                    .replace(R.id.container, VideoView_fragment.newInstance(1))
-                    .commit();
-    }
 
 
     @Override
@@ -156,6 +152,16 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
     public interface OnFragmentInteractionListener {
 
         public void onFragmentInteraction(String[] apiKey);
+    }
+
+    private void CloseFragment() {
+        VideoView_fragment vv = VideoView_fragment.newInstance(1);
+        Bundle args = vv.getArguments();
+        args.putString("APIKEY", APIKEY);
+        vv.setArguments(args);
+        getActivity().getFragmentManager().beginTransaction()
+                .replace(R.id.container, vv)
+                .commit();
     }
 
     private class LoginNow extends AsyncTask<String, Void, String> {
@@ -249,6 +255,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
             if (error.equals("false")){
                 // User has logged in successfully and api key has been issued
                 // Send data to FragmentActivity by hooking into UI event
+                APIKEY = auth.getApikey();
                 if (mListener != null) {
                     String[] authDetails = {auth.getName(),auth.getEmail(),auth.getApikey()};
                     mListener.onFragmentInteraction(authDetails);
@@ -268,6 +275,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
             }
 
         }
+
 
         @Override
         protected void onPreExecute () {

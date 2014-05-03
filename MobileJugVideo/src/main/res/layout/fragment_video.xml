@@ -1,3 +1,4 @@
+
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,4 +7,6 @@
     android:divider="#c0c0c0"
     android:dividerHeight="0.5dp"
     android:background="#ffffff"
-    tools:context="co.uk.mobilejug.kicc.VideoView_fragment" />
+    tools:context="co.uk.mobilejug.kicc.VideoView_fragment"
+    />
+

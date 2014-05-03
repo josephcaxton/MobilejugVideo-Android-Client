@@ -2,13 +2,14 @@ package co.uk.mobilejug.kicc;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -66,7 +67,10 @@ public class VideoListAdapter extends ArrayAdapter {
             holder = (ViewHolder) viewToUse.getTag();
         }
 
-         holder.image.setImageURI(Uri.parse(item.getImageLocation()));
+         holder.image.setImageResource(R.drawable.ic_launcher);
+         String Website = "http://mobilejug.co.uk";
+         Picasso.with(context).load(Website + item.getImageLocation()).noFade().into(holder.image);
+         //holder.image.setImageURI(Uri.parse(item.getImageLocation()));
          holder.titleText.setText(item.getDescription());
         return viewToUse;
     }

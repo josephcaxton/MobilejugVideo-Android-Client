@@ -6,15 +6,11 @@
     tools:context="co.uk.mobilejug.kicc.VideoFragment">
 
     <GridView
-        android:id="@android:id/list"
+        android:id="@+id/myGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="2" />
 
-    <TextView
-        android:id="@+id/mytext"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+
 
 </FrameLayout>

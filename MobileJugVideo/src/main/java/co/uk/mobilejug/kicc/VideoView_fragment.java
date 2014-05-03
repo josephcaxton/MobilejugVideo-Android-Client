@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,8 @@ import javax.net.ssl.SSLSession;
  */
 public class VideoView_fragment extends ListFragment {
 
-    private String ENDPOINT = "http://mobilejug.co.uk/services/v1/index.php/recentfreevideos";
+    private static final String  ALLRECENTVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/recentfreevideos";
+    private static final String ALLFREEVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/freevideos";
     private ArrayAdapter<VideoItem> mAdapter;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Integer sectionNum = 0;
@@ -165,7 +165,13 @@ public class VideoView_fragment extends ListFragment {
                     }
                 });
                 HttpURLConnection conn;
-                conn = client.open(new URL(ENDPOINT));
+                if(sectionNum == 1){
+                    conn = client.open(new URL(ALLRECENTVIDEOS));
+                }
+                else  {
+                    conn = client.open(new URL(ALLFREEVIDEOS));
+                }
+
 
                 publishProgress("10");
                 // Write the request.
@@ -249,7 +255,7 @@ public class VideoView_fragment extends ListFragment {
         private void Makedata(String result) {
 
             try{
-                Log.e("Joseph", result);
+                //Log.e("Joseph", result);
                 JSONObject js = new JSONObject(result);
                 String err = js.getString("error");
 

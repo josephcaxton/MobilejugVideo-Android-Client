@@ -3,6 +3,7 @@ package co.uk.mobilejug.kicc;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class VideoView_fragment extends ListFragment {
 
     private static final String  ALLRECENTVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/recentfreevideos";
     private static final String ALLFREEVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/freevideos";
+    private static final String ALLPREMIUMVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/getPremiumVideos";
+    private static final String ALLHISTORYVIDEOS = "http://mobilejug.co.uk/services/v1/index.php/getHistoryVideos";
     private ArrayAdapter<VideoItem> mAdapter;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Integer sectionNum = 0;
@@ -101,10 +104,22 @@ public class VideoView_fragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO Auto-generated method stub
-        Toast.makeText(getActivity(),
+
+       VideoItem vi =(VideoItem) getListView().getItemAtPosition(position);
+
+        //VideoPlayer vp = VideoPlayer.newInstance(1, vi.getURN());
+
+        Intent videoIntent = new Intent(getActivity(),VideoPlayer.class);
+        videoIntent.putExtra("VIDEOURN", vi.getURN());
+        videoIntent.putExtra("APIKEY",APIKey);
+        videoIntent.putExtra("VIDEOID",vi.getID());
+        startActivity(videoIntent);
+        /*Toast.makeText(getActivity(),
+                vi.getURN(),
+                Toast.LENGTH_LONG).show(); */
+        /*Toast.makeText(getActivity(),
                 getListView().getItemAtPosition(position).toString(),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_LONG).show();*/
     }
 
     @Override
@@ -168,8 +183,19 @@ public class VideoView_fragment extends ListFragment {
                 if(sectionNum == 1){
                     conn = client.open(new URL(ALLRECENTVIDEOS));
                 }
-                else  {
+                else if(sectionNum == 2) {
                     conn = client.open(new URL(ALLFREEVIDEOS));
+                }
+                else if(sectionNum == 3) {
+
+                    conn = client.open(new URL(ALLPREMIUMVIDEOS));
+                }
+                else if (sectionNum == 5) {
+                    conn = client.open(new URL(ALLHISTORYVIDEOS));
+                }
+                else{
+
+                    conn = client.open(new URL(ALLRECENTVIDEOS));
                 }
 
 
@@ -271,6 +297,9 @@ public class VideoView_fragment extends ListFragment {
                          mAdapter.notifyDataSetChanged();
 
                      }
+                      if (VideoList.size() < 1){
+                          Toast.makeText(getActivity(),"No videos to show",Toast.LENGTH_SHORT).show();
+                      }
 
                  }
                 else

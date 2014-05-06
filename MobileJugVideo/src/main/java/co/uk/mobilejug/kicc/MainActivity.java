@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, Login_fragment.OnFragmentInteractionListener, VideoView_fragment.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, Login_fragment.OnFragmentInteractionListener, VideoView_fragment.OnFragmentInteractionListener, Register_fragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.

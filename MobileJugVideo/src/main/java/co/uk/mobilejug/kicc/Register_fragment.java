@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
@@ -27,38 +28,31 @@ import java.net.URLEncoder;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
-
-
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Login_fragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Login_fragment#newInstance} factory method to
- * create an instance of this fragment.
- *
+ * Created by edit on 05/05/2014.
  */
-public class Login_fragment extends Fragment implements View.OnClickListener{
+public class Register_fragment extends Fragment implements View.OnClickListener {
 
-
-    private String ENDPOINT = "http://mobilejug.co.uk/services/v1/index.php/login";
+    private String ENDPOINT = "http://mobilejug.co.uk/services/v1/index.php/register";
     private OnFragmentInteractionListener mListener;
+    private EditText Name;
     private EditText Email;
     private EditText Password;
-    private Button btnLogin;
-    private Button btnNewUser;
-    private TextView txtLoginFailed;
+    private EditText ConfirmPassword;
+    private Button Register;
+    private Button Clear;
+    private Button btnBack;
+    private TextView registerFailed;
     private String APIKEY;
 
-    public static Login_fragment newInstance(int sectionNumber) {
-        Login_fragment fragment = new Login_fragment();
+    public static Register_fragment newInstance(int sectionNumber) {
+        Register_fragment fragment = new Register_fragment();
 
         return fragment;
     }
-    public Login_fragment() {
+    public Register_fragment() {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,59 +63,69 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        Email = (EditText)view.findViewById(R.id.txtEmail);
-        Password = (EditText)view.findViewById(R.id.txtpassword);
-        btnLogin = (Button)view.findViewById(R.id.btnlogin);
-        btnNewUser = (Button)view.findViewById(R.id.NewUser);
-        txtLoginFailed = (TextView)view.findViewById(R.id.loginFailed);
-
-        btnLogin.setOnClickListener(this);
-        btnNewUser.setOnClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        Name = (EditText)view.findViewById(R.id.nName);
+        Email = (EditText)view.findViewById(R.id.nEmail);
+        Password = (EditText)view.findViewById(R.id.nPassword);
+        ConfirmPassword = (EditText)view.findViewById(R.id.nConfiPass);
+        Register = (Button)view.findViewById(R.id.nRegister);
+        Clear = (Button)view.findViewById(R.id.nClear);
+        registerFailed =(TextView)view.findViewById(R.id.registerFailed);
+        btnBack = (Button)view.findViewById(R.id.nBack);
+        Register.setOnClickListener(this);
+        Clear.setOnClickListener(this);
         Email.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
         return view;
     }
-
     @Override
     public void onClick(View view) {
-        if (view.equals(btnLogin)){
-    try {
+        if (view.equals(Register)){
+            try {
 
-        if(Email.getText().length() < 1 || Password.getText().length() <1 ){
-            // Did not enter email address or password
-            txtLoginFailed.setText("Enter email address and password");
-            txtLoginFailed.setTextColor(Color.BLUE);
-            Email.requestFocus();
+                if(Email.getText().length() < 1 || Password.getText().length() < 1 || Name.getText().length() < 1  ){
+                    // Did not enter email address or password
+                    registerFailed.setText("Enter your name, email address and password");
+                    registerFailed.setTextColor(Color.BLUE);
+                    Email.requestFocus();
+
+                }
+                else if( !Password.getText().toString().equals(ConfirmPassword.getText().toString())){
+                    registerFailed.setText("The password entered does not match ");
+                    registerFailed.setTextColor(Color.BLUE);
+                    Password.requestFocus();
+
+                }
+                else {
+                    // Now go and login async
+                    new RegisterNow().execute(Name.getText().toString(), Email.getText().toString(), Password.getText().toString());
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else if(view.equals(Clear)){
+            registerFailed.setText("");
+            Name.setText("");
+                Email.setText("");
+                Password.setText("");
+                ConfirmPassword.setText("");
+
 
         }
-        else {
-            // Now go and login async
-            new LoginNow().execute(Email.getText().toString(), Password.getText().toString());
-        }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-         }
-        }
-        else if(view.equals(btnNewUser)){
 
-            Register_fragment vv =  Register_fragment.newInstance(1);
+        else if(view.equals(Name)){
 
-            getActivity().getFragmentManager().beginTransaction()
-                    .replace(R.id.container, vv)
-                    .commit();
+            Name.setText("");
 
         }
+        else if(view.equals(btnBack)){
 
-        else if(view.equals(Email)){
-
-            txtLoginFailed.setText("");
-
+            CloseFragment();
         }
         // Do something
     }
-
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -141,33 +145,18 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
 
         public void onFragmentInteraction(String[] apiKey);
     }
-
     private void CloseFragment() {
-        VideoView_fragment vv = VideoView_fragment.newInstance(1);
-        Bundle args = vv.getArguments();
-        args.putString("APIKEY", APIKEY);
-        vv.setArguments(args);
+        Login_fragment vv = Login_fragment.newInstance(1);
+
         getActivity().getFragmentManager().beginTransaction()
                 .replace(R.id.container, vv)
                 .commit();
     }
-
-    private class LoginNow extends AsyncTask<String, Void, String> {
+    private class RegisterNow extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -178,8 +167,9 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
 
 
 
-                String data = URLEncoder.encode("email", "UTF-8") + "=" + URLEncoder.encode(params[0], "UTF-8");
-                data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(params[1], "UTF-8");
+                String data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(params[0], "UTF-8");
+                data += "&" + URLEncoder.encode("email", "UTF-8") + "=" + URLEncoder.encode(params[1], "UTF-8");
+                data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(params[2], "UTF-8");
 
                 OkHttpClient client = new OkHttpClient();
                 // Ignore invalid SSL endpoints.
@@ -203,9 +193,13 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
 
 
                 // Read the response.
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                if ((conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) && (conn.getResponseCode() != HttpURLConnection.HTTP_OK)) {
+
+                    //Log.e("Joseph",conn.getResponseCode() + " code/message " + conn.getResponseMessage());
+
                     throw new IOException("Unexpected HTTP response: "
                             + conn.getResponseCode() + " " + conn.getResponseMessage());
+
                 }
                 in = conn.getInputStream();
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -225,26 +219,26 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
             finally {
                 // Clean up.
                 if (out != null){
-                        try {
-                            out.close();
-                        }
-                        catch (Exception e) {
-
-                    }
-                    }
-
-
-                }
-                if (in != null){
                     try {
-                        in.close();
+                        out.close();
                     }
                     catch (Exception e) {
 
                     }
                 }
-            return "";
+
+
             }
+            if (in != null){
+                try {
+                    in.close();
+                }
+                catch (Exception e) {
+
+                }
+            }
+            return "";
+        }
 
 
         @Override
@@ -262,7 +256,7 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
                 if (mListener != null) {
                     String[] authDetails = {auth.getName(),auth.getEmail(),auth.getApikey()};
                     mListener.onFragmentInteraction(authDetails);
-
+                    Toast.makeText(getActivity(),auth.getMessage(),Toast.LENGTH_SHORT).show();
                     // Update the list in the Drawer so that it can show logout
 
                     CloseFragment();
@@ -270,11 +264,13 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
             }
             else{
                 // Login failed because error was returned from service
-                txtLoginFailed.setText(auth.getMessage());
-                txtLoginFailed.setTextColor(Color.RED);
+                registerFailed.setText(auth.getMessage());
+                registerFailed.setTextColor(Color.RED);
+                Name.setText("");
                 Email.setText("");
                 Password.setText("");
-                Email.requestFocus();
+                ConfirmPassword.setText("");
+                Name.requestFocus();
             }
 
         }
@@ -290,7 +286,5 @@ public class Login_fragment extends Fragment implements View.OnClickListener{
         }
 
     }
+
 }
-
-
-

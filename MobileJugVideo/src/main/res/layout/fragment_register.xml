@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+<LinearLayout
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:layout_gravity="fill_horizontal"
+    android:orientation="vertical">
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <TextView
+            android:id="@+id/registerFailed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="fill_horizontal"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:id="@+id/nName"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:inputType="text"
+            android:hint="Enter your name"
+            android:layout_width="fill_parent"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="fill_horizontal">
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:id="@+id/nEmail"
+            android:lines="1"
+            android:inputType="textEmailAddress"
+            android:hint="Enter your email address"
+            android:layout_width="fill_parent"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="fill_horizontal">
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:gravity="fill_horizontal"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:id="@+id/nPassword"
+            android:hint="Enter a password"
+            android:inputType="textPassword"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="match_parent">
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:gravity="fill_horizontal"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:id="@+id/nConfiPass"
+            android:hint="Confirm your new password"
+            android:inputType="textPassword"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="match_parent">
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <Button
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/Register"
+            android:id="@+id/nRegister"
+            android:clickable="true"
+            android:layout_width="fill_parent"
+            android:layout_weight="1">
+        </Button>
+        <Button
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/Clear"
+            android:id="@+id/nClear"
+            android:clickable="true"
+            android:layout_width="fill_parent"
+            android:layout_weight="1">
+        </Button>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <Button
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/Back"
+            android:id="@+id/nBack"
+            android:clickable="true" android:layout_width="fill_parent" android:layout_weight="1"></Button>
+
+
+    </LinearLayout>
+
+</LinearLayout>
+</ScrollView>

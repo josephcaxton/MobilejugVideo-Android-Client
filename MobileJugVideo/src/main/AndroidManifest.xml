@@ -19,6 +19,16 @@
         </activity>
         <activity android:name="co.uk.mobilejug.kicc.MainActivity"
                    android:label="KICC Videos"></activity>
+        <activity android:name=".VideoPlayer"
+            android:label="@string/app_name" android:exported="false"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="co.uk.mobilejug.kicc.VideoPlayer" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
 
     </application>
 

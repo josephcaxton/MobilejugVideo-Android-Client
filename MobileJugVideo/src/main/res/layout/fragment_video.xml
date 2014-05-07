@@ -7,6 +7,7 @@
     android:divider="#c0c0c0"
     android:dividerHeight="0.5dp"
     android:background="#ffffff"
+    android:id="@id/android:list"
     tools:context="co.uk.mobilejug.kicc.VideoView_fragment"
     />
 

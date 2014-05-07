@@ -29,7 +29,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -46,7 +45,7 @@ public class VideoView_fragment extends ListFragment {
     private ArrayAdapter<VideoItem> mAdapter;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Integer sectionNum = 0;
-    private List VideoList;
+    private ArrayList VideoList;
     private String APIKey;
     private OnFragmentInteractionListener mListener;
 
@@ -98,22 +97,39 @@ public class VideoView_fragment extends ListFragment {
         mAdapter = new VideoListAdapter(getActivity(), VideoList);
         setListAdapter(mAdapter);
 
-
-            return inflater.inflate(R.layout.fragment_video, container, false);
+       // return inflater.inflate(R.layout.fragment_video, null);
+         //   return inflater.inflate(R.layout.fragment_video, container, false);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-       VideoItem vi =(VideoItem) getListView().getItemAtPosition(position);
+        Intent videoIntent = new Intent(getActivity(), VideoPlayer.class);
+        if (sectionNum == 4){
 
-        //VideoPlayer vp = VideoPlayer.newInstance(1, vi.getURN());
+            // This is the playList clicked
+            videoIntent.putExtra("StartPlayingFrom",position);
+            videoIntent.putParcelableArrayListExtra("VideoList",VideoList);
+            videoIntent.putExtra("APIKEY", APIKey);
+            startActivity(videoIntent);
+        }
+        else {
 
-        Intent videoIntent = new Intent(getActivity(),VideoPlayer.class);
-        videoIntent.putExtra("VIDEOURN", vi.getURN());
-        videoIntent.putExtra("APIKEY",APIKey);
-        videoIntent.putExtra("VIDEOID",vi.getID());
-        startActivity(videoIntent);
+
+            VideoItem vi = (VideoItem) getListView().getItemAtPosition(position);
+
+            ////VideoPlayer vp = VideoPlayer.newInstance(1, vi.getURN());
+            videoIntent.putExtra("VideoItem",vi);
+            videoIntent.putExtra("APIKEY", APIKey);
+
+            /*videoIntent.putExtra("VIDEOURN", vi.getURN());
+            videoIntent.putExtra("APIKEY", APIKey);
+            videoIntent.putExtra("VIDEOID", vi.getID());*/
+            startActivity(videoIntent);
+
+
+        }
         /*Toast.makeText(getActivity(),
                 vi.getURN(),
                 Toast.LENGTH_LONG).show(); */
@@ -195,7 +211,7 @@ public class VideoView_fragment extends ListFragment {
                 }
                 else{
 
-                    conn = client.open(new URL(ALLRECENTVIDEOS));
+                    conn = client.open(new URL(ALLFREEVIDEOS));
                 }
 
 

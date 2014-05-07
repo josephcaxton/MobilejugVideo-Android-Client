@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -32,6 +33,9 @@ public class VideoPlayer extends Activity {
     private static String URL;
     private static String APIKey;
     private static String VideoID;
+    private static int Startfrom;
+    private static int NumberTo;
+    private ArrayList videolist;
 
     private static ProgressDialog progressDialog;
     public VideoPlayer() {
@@ -49,10 +53,33 @@ public class VideoPlayer extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
+            // If this is playlist then play each video in turn a starting from the selected video
+            if(extras.getParcelableArrayList("VideoList") != null){
+                videolist = extras.getParcelableArrayList("VideoList");
+                NumberTo = videolist.size();
 
-            URL = extras.getString("VIDEOURN");
+                Startfrom = extras.getInt("StartPlayingFrom");
+                VideoItem vi = (VideoItem)videolist.get(Startfrom);
+                //Log.e("Joseph", vi.getDescription());
+                URL = vi.getURN();
+                VideoID = String.valueOf(vi.getID());
+
+                APIKey = extras.getString("APIKEY");
+
+                Startfrom ++;
+
+            }
+            else {
+            /*URL = extras.getString("VIDEOURN");
             APIKey =extras.getString("APIKEY");
-            VideoID = String.valueOf(extras.getInt("VIDEOID"));
+            VideoID = String.valueOf(extras.getInt("VIDEOID"));*/
+                // this is coming from parcelable
+                VideoItem vi = extras.getParcelable("VideoItem");
+                URL = vi.getURN();
+                VideoID = String.valueOf(vi.getID());
+
+                APIKey = extras.getString("APIKEY");
+            }
         }
 
         vv = (VideoView)findViewById(R.id.videoView);
@@ -69,6 +96,7 @@ public class VideoPlayer extends Activity {
         vv.setMediaController(mc);
 
         vv.requestFocus();
+
         vv.setOnPreparedListener(new MediaPlayer.OnPreparedListener()  {
                                                     @Override
                                                     public void onPrepared(MediaPlayer mp) {
@@ -76,6 +104,26 @@ public class VideoPlayer extends Activity {
                                                         vv.start();
                                                     }
                                                 });
+
+        vv.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                if(Startfrom > 0 && Startfrom < NumberTo) {
+
+                    VideoItem vi = (VideoItem) videolist.get(Startfrom);
+                    URL = vi.getURN();
+                    VideoID = String.valueOf(vi.getID());
+                    int index = URL.indexOf("/", 2);
+                    String VideoName = URL.substring(index);
+                    vv.setVideoPath("http://mobilejug.co.uk" + URL + "/" + "30" + VideoName + "_30.mp4");
+                    recordToHistory();
+                    Startfrom ++;
+                    vv.start();
+                }
+            }
+            });
 
 
     }

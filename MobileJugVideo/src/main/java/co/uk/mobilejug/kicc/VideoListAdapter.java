@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by edit on 26/04/2014.
@@ -22,8 +22,8 @@ public class VideoListAdapter extends ArrayAdapter {
 
     // We can use list or Grid.. List is the default
     private boolean useList = true;
-    public VideoListAdapter(Context context, List items) {
-        super(context, R.layout.fragment_video_list, items);
+    public VideoListAdapter(Context context, ArrayList items) {
+        super(context, android.R.layout.simple_list_item_1, items);
         this.context = context;
 
     }
